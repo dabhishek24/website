@@ -1,48 +1,42 @@
 pipeline {
     agent any
-
     environment {
         IMAGE_NAME = "my-webapp"
     }
+    options { timestamps() }
 
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo "Building Docker image for branch ${env.BRANCH_NAME}"
-                script {
-                    sh 'docker build -t $IMAGE_NAME .'
-                }
+                checkout scm
             }
         }
-
-        stage('Test') {
+        stage('Build Image') {
             steps {
-                echo "Running tests (placeholder)"
-                // Insert real tests if any
-                sh 'echo "Tests passed!"'
+                sh "docker build -t ${IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} ."
             }
         }
-
-        stage('Deploy to Production') {
-            when {
-                branch 'master'
-            }
+        stage('Test Container') {
             steps {
-                echo "Deploying to production"
-                script {
-                    sh '''
-                    docker stop webapp || true
-                    docker rm webapp || true
-                    docker run -d -p 80:80 --name webapp $IMAGE_NAME
-                    '''
-                }
+                sh """
+                   docker run --rm ${IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER} \
+                   sh -c 'echo Webapp OK'
+                """
+            }
+        }
+        stage('Deploy to Prod') {
+            when { branch 'master' }
+            steps {
+                sh """
+                   docker stop webapp || true
+                   docker rm webapp || true
+                   docker run -d --name webapp -p 80:80 \
+                       ${IMAGE_NAME}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}
+                """
             }
         }
     }
-
     post {
-        always {
-            echo "Pipeline complete for ${env.BRANCH_NAME}"
-        }
+        always { echo "Pipeline finished for ${env.BRANCH_NAME}" }
     }
 }
