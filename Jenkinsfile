@@ -40,3 +40,7 @@ pipeline {
         always { echo "Pipeline finished for ${env.BRANCH_NAME}" }
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7f7975b (ci test 2)
