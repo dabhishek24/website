@@ -26,8 +26,8 @@ pipeline {
         }
         stage('Deploy to K8s') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml'
-                sh 'kubectl apply -f k8s/service-nodeport.yaml'
+                sh 'kubectl apply -f website/deployment.yaml'
+                sh 'kubectl apply -f website/service-nodeport.yaml'
             }
         }
     }
