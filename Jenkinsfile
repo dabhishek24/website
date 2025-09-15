@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "your-dockerhub-username/website:latest"
+        DOCKER_IMAGE = "dabhishek24/website:latest"
     }
     stages {
         stage('Checkout') {
