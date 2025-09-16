@@ -17,10 +17,10 @@ spec:
           image: dabhishek24/website:latest
           ports:
             - containerPort: 80
-              resources:
-               limits:
-                memory: "256Mi"
-                cpu: "500m"
-               requests:
-                memory: "128Mi"
-                cpu: "250m"
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
